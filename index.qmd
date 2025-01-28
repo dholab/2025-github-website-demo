@@ -1,0 +1,20 @@
+---
+title: "Creating Github-hosted Dashboards"
+format:
+    html:
+        embed-resources: true
+        keep-ipynb: false
+author: 
+    - name: Nick Minor
+      orcid: 0000-0003-2929-8229
+      email: nrminor@wisc.edu
+      affiliation:
+        - University of Wisconsin - Madison
+        - Wisconsin National Primate Research Center
+editor: source
+jupyter: python3
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
