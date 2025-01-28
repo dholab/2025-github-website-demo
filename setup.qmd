@@ -83,7 +83,7 @@ jupyter: python3
 ---
 ```
 
-We don't actually need most of this--the key parts are telling it that we want to use the jupyter engine with Python, that we don't need to keep the intermediate Jupyter representation after rendering, and that we don't want our HTML to depend on externel files. Instead, we want everything embedded into the HTML, which results in a larger HTML but also a simpler, more foolproof project structure.
+We don't actually need most of this--the key parts are telling it that we want to use the jupyter engine with Python, that we don't need to keep the intermediate Jupyter representation after rendering, and that we don't want our HTML to depend on external files. Instead, we want everything embedded into the HTML, which results in a larger HTML but also a simpler, more foolproof project structure.
 
 Like with `_quarto.yml`, there are dozens of controls you can use here; if you need something, check the [docs](https://quarto.org/docs/reference/) for how to get it. Chances are, there's a setting for it.
 
@@ -91,7 +91,7 @@ Like with `_quarto.yml`, there are dozens of controls you can use here; if you n
 
 That's all we need to get Quarto working, but we still need to set up Python so that Quarto can run Python code. To do that, I'm going to use the inimitable [`uv`](https://docs.astral.sh/uv/) package manager. The best thing about `uv` is that it's fast, _really_ fast.
 
-The second best thing is that it can, like Quarto itself, be configured with a single, declarative configuration file called `pyproject.toml`, This file is in the TOML language instead of YAML, but don't worry; it should be similarly readable and relatively obvious in what it's specifying. The `uv` team has gone to great lengths to make sure this file is compliant with Python-ecosystem standards, which gets rid of headaches you get with some other Python managers like [Poetry](https://python-poetry.org/). `uv` has tons of killer features and is one of the best things to happen to Python in a long time.
+The second best thing is that it can, like Quarto itself, be configured with a single, declarative configuration file called `pyproject.toml`. This file is in the TOML language instead of YAML, but don't worry; it should be similarly readable and relatively obvious in what it's specifying. The `uv` team has gone to great lengths to make sure this file is compliant with Python-ecosystem standards, which gets rid of headaches you get with some other Python managers like [Poetry](https://python-poetry.org/). `uv` has tons of killer features and is one of the best things to happen to Python in a long time.
 
 ::: {.callout-note collapse=true title="On `uv`" icon=false}
 Can you tell I love `uv`?
@@ -196,7 +196,7 @@ git remote add origin https://github.com/dholab/2025-github-website-demo.git
 git push -u origin main
 ```
 
-With that, the rest is extremely simple: run `quarto publish gh-pages`, which will create the `gh-pages` branch and plug it into a `.github.io` site, and then paste the following Github into the main branch:
+With that, the rest is extremely simple: run `quarto publish gh-pages`, which will create the `gh-pages` branch and plug it into a `.github.io` site, and then paste the following Github workflow into the main branch:
 
 ``` {.yaml filename=".github/workflows/publish.yml"}
 on:
