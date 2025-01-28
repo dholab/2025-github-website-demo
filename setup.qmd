@@ -5,6 +5,7 @@ format:
     html:
         embed-resources: true
         keep-ipynb: false
+        code-copy: true
 execute:
     echo: false
     eval: false
@@ -26,7 +27,7 @@ Before we proceed, let's tweak our Quarto configuration a bit. We'll do these tw
 
 First, open the `_quarto.yml` in your favorite editor (VSCode, Positron, and RStudio have the best support for Quarto, though you can use any editor you can set to recognize `.qmd` files as Markdown). Start by modifying the top block with an additional setting: `output-dir: docs`.
 
-```yaml
+```{.yaml filename="_quarto.yml" code-line-numbers="3"}
 project:
   type: website
   output-dir: docs
@@ -36,7 +37,7 @@ Note that the YAML language is very sensitive about indentation, similar to Pyth
 
 Next, we'll modify the website block, which controls navigation and other website behaviors. In this case, I'm going to add a page by putting this `qmd` file in the list:
 
-```yaml
+```{.yaml filename="_quarto.yml"}
 website:
   title: "Creating Github-hosted Dashboards"
   navbar:
@@ -50,7 +51,7 @@ website:
 We won't touch the format section, but just note that that's where we specify the theme we want applied to our HTML. Supported themes are really just named styles in the `styles.css` that was generated when we created the project.
 Finally, we're going to add a section at the bottom that tells Quarto not to rerun code unless it has been updated:
 
-```yaml
+```{.yaml filename="_quarto.yml"}
 execute:
   freeze: auto
 ```
@@ -61,7 +62,7 @@ As the look and feel of our project comes together, we can expect to return to t
 
 Each `.qmd` has its own YAML-based configuration, which you'll see in `index.qmd`. To demo some of the controls we can use, I modified my `index.qmd` frontmatter to the following:
 
-```yaml
+```{.yaml filename="index.qmd"}
 ---
 title: "Creating Github-hosted Dashboards"
 format:
@@ -98,7 +99,7 @@ To get started, make sure you have [`uv` installed](https://docs.astral.sh/uv/ge
 
 This will also generate a Python virtual environment and the aforementioned `pyproject.toml` for us. Now, let's put some stuff in it! Our website will need a few things: the Jupyter engine, a Python kernel, and the labkey Python API, all of which are available on the [Python Package Index (PyPI)](https://pypi.org/) and are thus installable with `uv`. Just run `uv add jupyter ipykernel labkey` and then observe the following change in `pyproject.toml`:
 
-```toml
+```{.toml filename="pyproject.toml"}
 dependencies = [
     "ipykernel>=6.29.5",
     "jupyter>=1.1.1",
@@ -115,7 +116,7 @@ One of the ways `uv` is standards compliant is by using `source .venv/bin/activa
 
 Because I move in and out of Python environments a lot, I've placed a few aliases (shorthands) for this in the `.zshrc` file in my home directory, which is run every time I launch a new terminal window or tab:
 
-```bash
+```{.zsh filename="~/.zshrc"}
 alias uvv='uv sync --all-extras && source .venv/bin/activate'
 alias uvs='uv sync --all-extras'
 alias a='source .venv/bin/activate'
@@ -139,7 +140,7 @@ Instead, we're going to invert the logic of our `.gitignore` file: we're going t
 
 This method results in a `.gitignore` that looks like this at the time of this writing:
 
-```txt
+```{.txt}
 *
 
 # project root exceptions
@@ -182,4 +183,63 @@ Rather than rendering our website itself, we're going to use GitHub to do that f
 
 Conveniently, the Quarto developers anticipated this use case and wrote [a very helpful tutorial for it](https://quarto.org/docs/publishing/github-pages.html#publish-action), which I'll partially reproduce here.
 
+The first thing we need to do is set up a "remote", which is to say a repository on GiHub that we can sync with this project. To do so, I went to the [`dholab` GitHub org](https://github.com/dholab), hit the green new button, and made a repo called "2025-github-website-demo". I then staged all the files allowed in `.gitignore`, committed them, and then ran the following to set that repo as our remote
 
+```bash
+git branch -M main
+git remote add origin https://github.com/dholab/2025-github-website-demo.git
+git push -u origin main
+```
+
+::: {.callout-warning collapse=true}
+The GitHub repo is private, so if you don't have access to the `dholab` org, you won't be able to see it.
+:::
+
+With that, the rest is extremely simple: run `quarto publish gh-pages`, which will create the `gh-pages` branch and plug it into a `.github.io` site, and then paste the following Github into the main branch:
+
+``` {.yaml filename=".github/workflows/publish.yml"}
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+        
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Define a cache dependency glob
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+```
+
+This workflow, adapted from the above Quarto tutorial plus [the `uv` docs](https://docs.astral.sh/uv/guides/integration/github/#using-uv-in-github-actions), essentially replicates what we've done above, except with the benefit of a previously created `uv` environment (that's what `uv.lock` records).
