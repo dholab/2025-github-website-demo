@@ -6,6 +6,8 @@ format:
         embed-resources: true
         keep-ipynb: false
         code-copy: true
+    gfm:
+        wrap: none
 execute:
     echo: false
     eval: false
@@ -194,10 +196,6 @@ git remote add origin https://github.com/dholab/2025-github-website-demo.git
 git push -u origin main
 ```
 
-::: {.callout-warning collapse=true}
-The GitHub repo is private, so if you don't have access to the `dholab` org, you won't be able to see it.
-:::
-
 With that, the rest is extremely simple: run `quarto publish gh-pages`, which will create the `gh-pages` branch and plug it into a `.github.io` site, and then paste the following Github into the main branch:
 
 ``` {.yaml filename=".github/workflows/publish.yml"}
@@ -255,7 +253,7 @@ This workflow, adapted from the above Quarto tutorial plus [the `uv` docs](https
 With everything set up, I recommend the following workflow for iterating on this project:
 
 1. Whenever you starting making changes, make sure you have `quarto preview` running within the python environment. That way, you can keep an eye on the rendered project as you update you `.qmd` and Python code.
-2. If you have [just]() installed, run `just readme` whenever you update `setup.qmd`. This keeps the repo readme up to date.
+2. If you have [just](https://just.systems/) installed, run `just readme` whenever you update `setup.qmd`. This keeps the repo readme up to date.
 3. Be sure to use `uv add` to record any dependencies throughout your Python or `.qmd` files. Likewise for allowing new files to be git-tracked by adding explicit exceptions to `.gitignore`.
 4. For adding Python, start with putting code into blocks in your `.qmd` files. When that code starts to get a bit large, e.g. >20 lines, consider placing it in our library and importing it as a function instead.
 
