@@ -5095,6 +5095,7 @@ Pro-tip on shell aliases
 <li>If you have <a href="https://just.systems/">just</a> installed, run <code>just readme</code> whenever you update <code>setup.qmd</code>. This keeps the repo readme up to date.</li>
 <li>Be sure to use <code>uv add</code> to record any dependencies throughout your Python or <code>.qmd</code> files. Likewise for allowing new files to be git-tracked by adding explicit exceptions to <code>.gitignore</code>.</li>
 <li>For adding Python, start with putting code into blocks in your <code>.qmd</code> files. When that code starts to get a bit large, e.g. &gt;20 lines, consider placing it in our library and importing it as a function instead.</li>
+<li>Keep in mind that as currently configured, the website-update action will run <em>any time any file in main is updated</em>. If you’re pushing lots of little updates, it may make sense to either a) temporarily disable the publishing action, or b) restrain the action trigger to only when particular files, e.g., particular <code>.qmd</code> or <code>.py</code> files, are updated.</li>
 </ol>
 
 
