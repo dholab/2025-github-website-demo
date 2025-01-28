@@ -31,7 +31,17 @@ jobs:
       - name: Render and Publish from local venv
         run: |
           source .venv/bin/activate
-          quarto publish gh-pages
+          git config --global user.email "${{ inputs.GITHUB_EMAIL }}"
+          git config --global user.name "${{ inputs.GITHUB_USERNAME }}"
+          TARGET="${{ inputs.to }}"
+          if [ "$TARGET" == "" ]; then
+            TARGET="${{ inputs.target }}"
+          fi
+          if [ "${{ inputs.render }}" != "true" ]; then
+            quarto publish $TARGET ${{ inputs.path }} --no-render --no-browser
+          else
+            quarto publish $TARGET ${{ inputs.path }} --no-browser
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
