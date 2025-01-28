@@ -4803,6 +4803,7 @@ vertical-align: -.125em;
   </ul></li>
   <li><a href="#setting-up-git" id="toc-setting-up-git" class="nav-link" data-scroll-target="#setting-up-git">Setting up Git</a></li>
   <li><a href="#setting-up-github-actions" id="toc-setting-up-github-actions" class="nav-link" data-scroll-target="#setting-up-github-actions">Setting up GitHub Actions</a></li>
+  <li><a href="#parting-words-iterating-on-this-project" id="toc-parting-words-iterating-on-this-project" class="nav-link" data-scroll-target="#parting-words-iterating-on-this-project">Parting words: iterating on this project</a></li>
   </ul>
 </nav>
     </div>
@@ -4985,7 +4986,11 @@ Pro-tip on shell aliases
 <p>You may be tempted to get writing, but first, do your future self a favor and get your version control organized. The key to this will be your <code>.gitignore</code>. <code>.gitignore</code> files tell git (you guessed it) what to ignore. This is helpful, but these files can quickly become a Sisyphean task; the bigger your project gets, the more you have to add line after line after line of new things you have to ignore. This makes it easy to accidentally commit files you didn’t mean to.</p>
 <p>Instead, we’re going to invert the logic of our <code>.gitignore</code> file: we’re going to use it to say ignore <em>everything</em> by default, and then only add a line for each <em>exception</em> to that rule. This means we’ll only ever be able to stage and commit files and directories that we’ve explicitly allowed in our <code>.gitignore</code>. Inverting your logic means more work up front, of course, but your future self will thank you.</p>
 <p>This method results in a <code>.gitignore</code> that looks like this at the time of this writing:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode txt code-with-copy"><code class="sourceCode default"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>*</span>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>.gitignore</strong></pre>
+</div>
+<div class="sourceCode" id="cb7" data-filename=".gitignore"><pre class="sourceCode txt code-with-copy"><code class="sourceCode default"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>*</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a># project root exceptions</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>!.gitignore</span>
@@ -5011,6 +5016,7 @@ Pro-tip on shell aliases
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>!/.github/workflows</span>
 <span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>!/.github/workflows/*.yml</span>
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>!/.github/workflows/*.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>You’ll see ignoring everything is as simple as starting the file with <code>*</code>, the glob wildcard for anything. Then, for each directory and file we want to allow, we prepend the path with a bang <code>!</code>, which is the not operator.</p>
 <p>We only allow Quarto project files, <code>uv</code> project files, python scripts from our library, and GitHub workflows we’ll eventually write. With this setup, we’ll never accidentally push Jupyter notebooks, JavaScript files Quarto generates, etc.</p>
 <p>Now, just run <code>git init</code> in your terminal and have at it.</p>
@@ -5096,6 +5102,16 @@ Warning
 <span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-dependency-glob</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;uv.lock&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This workflow, adapted from the above Quarto tutorial plus <a href="https://docs.astral.sh/uv/guides/integration/github/#using-uv-in-github-actions">the <code>uv</code> docs</a>, essentially replicates what we’ve done above, except with the benefit of a previously created <code>uv</code> environment (that’s what <code>uv.lock</code> records).</p>
+</section>
+<section id="parting-words-iterating-on-this-project" class="level2">
+<h2 class="anchored" data-anchor-id="parting-words-iterating-on-this-project">Parting words: iterating on this project</h2>
+<p>With everything set up, I recommend the following workflow for iterating on this project:</p>
+<ol type="1">
+<li>Whenever you starting making changes, make sure you have <code>quarto preview</code> running within the python environment. That way, you can keep an eye on the rendered project as you update you <code>.qmd</code> and Python code.</li>
+<li>If you have <a href>just</a> installed, run <code>just readme</code> whenever you update <code>setup.qmd</code>. This keeps the repo readme up to date.</li>
+<li>Be sure to use <code>uv add</code> to record any dependencies throughout your Python or <code>.qmd</code> files. Likewise for allowing new files to be git-tracked by adding explicit exceptions to <code>.gitignore</code>.</li>
+<li>For adding Python, start with putting code into blocks in your <code>.qmd</code> files. When that code starts to get a bit large, e.g. &gt;20 lines, consider placing it in our library and importing it as a function instead.</li>
+</ol>
 
 
 </section>
