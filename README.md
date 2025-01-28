@@ -8,6 +8,8 @@
   - [Previewing our project](#previewing-our-project)
 - [Setting up Git](#setting-up-git)
 - [Setting up GitHub Actions](#setting-up-github-actions)
+- [Parting words: iterating on this
+  project](#parting-words-iterating-on-this-project)
 
 ## Setting up Quarto
 
@@ -270,6 +272,10 @@ front, of course, but your future self will thank you.
 This method results in a `.gitignore` that looks like this at the time
 of this writing:
 
+<div class="code-with-filename">
+
+**.gitignore**
+
 ``` txt
 *
 
@@ -298,6 +304,8 @@ of this writing:
 !/.github/workflows/*.yml
 !/.github/workflows/*.yaml
 ```
+
+</div>
 
 You’ll see ignoring everything is as simple as starting the file with
 `*`, the glob wildcard for anything. Then, for each directory and file
@@ -409,3 +417,22 @@ This workflow, adapted from the above Quarto tutorial plus [the `uv`
 docs](https://docs.astral.sh/uv/guides/integration/github/#using-uv-in-github-actions),
 essentially replicates what we’ve done above, except with the benefit of
 a previously created `uv` environment (that’s what `uv.lock` records).
+
+## Parting words: iterating on this project
+
+With everything set up, I recommend the following workflow for iterating
+on this project:
+
+1.  Whenever you starting making changes, make sure you have
+    `quarto preview` running within the python environment. That way,
+    you can keep an eye on the rendered project as you update you `.qmd`
+    and Python code.
+2.  If you have [just]() installed, run `just readme` whenever you
+    update `setup.qmd`. This keeps the repo readme up to date.
+3.  Be sure to use `uv add` to record any dependencies throughout your
+    Python or `.qmd` files. Likewise for allowing new files to be
+    git-tracked by adding explicit exceptions to `.gitignore`.
+4.  For adding Python, start with putting code into blocks in your
+    `.qmd` files. When that code starts to get a bit large, e.g. \>20
+    lines, consider placing it in our library and importing it as a
+    function instead.
