@@ -14,7 +14,7 @@
 
 First, we make sure [Quarto is installed](https://quarto.org/docs/get-started/), and then use it to create a project in the current working directory with `quarto project create`. This command is interactive and will guide you through creating the kind of project you want. In this case, the key point is that we want a website project to be created in the current working directory.
 
-This will create a few files for use: the `_quarto.yml` file for whole-project configuration, the `index.qmd` file that will serve as the homepage and entrypoint for the website, and an `about.qmd` that will serve as an “About” page in a separate “tab” on the website. We also get a `styles.css` file, which provides some aesthetic tweaks to what would otherwise be raw, boring HTML.
+This will create a few files for use: the `_quarto.yml` file for whole-project configuration, the `index.qmd` file that will serve as the homepage and entrypoint for the website, and an `about.qmd` that will serve as an “About” page in a separate “tab” on the website. We also get a `styles.css` file, which allows us to do some aesthetic tweaks to what would otherwise be raw, boring HTML. The said, we don’t have to touch it in this case, as the Quarto renderer comes with a number of CSS themes built-in.
 
 > [!NOTE]
 >
@@ -61,7 +61,9 @@ website:
 
 </div>
 
-We won’t touch the format section, but just note that that’s where we specify the theme we want applied to our HTML. Supported themes are really just named styles in the `styles.css` that was generated when we created the project. Finally, we’re going to add a section at the bottom that tells Quarto not to rerun code unless it has been updated:
+We won’t touch the format section, but just note that that’s where we specify the theme we want applied to our HTML. These adjustments could be switching to a different built-in theme, or making out own tweaks manually in `styles.css`.
+
+Finally, we’re going to add a section at the bottom that tells Quarto not to rerun code unless it has been updated:
 
 <div class="code-with-filename">
 
