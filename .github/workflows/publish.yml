@@ -26,12 +26,12 @@ jobs:
           python-version-file: ".python-version"
         
       - name: Install the project
-        run: uv sync --all-extras --dev && source .venv/bin/activate
+        run: uv sync --all-extras --dev
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
+      - name: Render and Publish from local venv
+        run: |
+          source .venv/bin/activate
+          quarto publish gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
