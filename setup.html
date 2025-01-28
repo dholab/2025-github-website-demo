@@ -4910,14 +4910,14 @@ HTML?
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> python3</span></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We don’t actually need most of this–the key parts are telling it that we want to use the jupyter engine with Python, that we don’t need to keep the intermediate Jupyter representation after rendering, and that we don’t want our HTML to depend on externel files. Instead, we want everything embedded into the HTML, which results in a larger HTML but also a simpler, more foolproof project structure.</p>
+<p>We don’t actually need most of this–the key parts are telling it that we want to use the jupyter engine with Python, that we don’t need to keep the intermediate Jupyter representation after rendering, and that we don’t want our HTML to depend on external files. Instead, we want everything embedded into the HTML, which results in a larger HTML but also a simpler, more foolproof project structure.</p>
 <p>Like with <code>_quarto.yml</code>, there are dozens of controls you can use here; if you need something, check the <a href="https://quarto.org/docs/reference/">docs</a> for how to get it. Chances are, there’s a setting for it.</p>
 </section>
 </section>
 <section id="setting-up-python" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-python">Setting up python</h2>
 <p>That’s all we need to get Quarto working, but we still need to set up Python so that Quarto can run Python code. To do that, I’m going to use the inimitable <a href="https://docs.astral.sh/uv/"><code>uv</code></a> package manager. The best thing about <code>uv</code> is that it’s fast, <em>really</em> fast.</p>
-<p>The second best thing is that it can, like Quarto itself, be configured with a single, declarative configuration file called <code>pyproject.toml</code>, This file is in the TOML language instead of YAML, but don’t worry; it should be similarly readable and relatively obvious in what it’s specifying. The <code>uv</code> team has gone to great lengths to make sure this file is compliant with Python-ecosystem standards, which gets rid of headaches you get with some other Python managers like <a href="https://python-poetry.org/">Poetry</a>. <code>uv</code> has tons of killer features and is one of the best things to happen to Python in a long time.</p>
+<p>The second best thing is that it can, like Quarto itself, be configured with a single, declarative configuration file called <code>pyproject.toml</code>. This file is in the TOML language instead of YAML, but don’t worry; it should be similarly readable and relatively obvious in what it’s specifying. The <code>uv</code> team has gone to great lengths to make sure this file is compliant with Python-ecosystem standards, which gets rid of headaches you get with some other Python managers like <a href="https://python-poetry.org/">Poetry</a>. <code>uv</code> has tons of killer features and is one of the best things to happen to Python in a long time.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled" title="On `uv`">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -5035,7 +5035,7 @@ Pro-tip on shell aliases
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-M</span> main</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin https://github.com/dholab/2025-github-website-demo.git</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>With that, the rest is extremely simple: run <code>quarto publish gh-pages</code>, which will create the <code>gh-pages</code> branch and plug it into a <code>.github.io</code> site, and then paste the following Github into the main branch:</p>
+<p>With that, the rest is extremely simple: run <code>quarto publish gh-pages</code>, which will create the <code>gh-pages</code> branch and plug it into a <code>.github.io</code> site, and then paste the following Github workflow into the main branch:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>.github/workflows/publish.yml</strong></pre>
