@@ -33,15 +33,7 @@ jobs:
           source .venv/bin/activate
           git config --global user.email "${{ inputs.GITHUB_EMAIL }}"
           git config --global user.name "${{ inputs.GITHUB_USERNAME }}"
-          TARGET="${{ inputs.to }}"
-          if [ "$TARGET" == "" ]; then
-            TARGET="${{ inputs.target }}"
-          fi
-          if [ "${{ inputs.render }}" != "true" ]; then
-            quarto publish $TARGET ${{ inputs.path }} --no-render --no-browser
-          else
-            quarto publish $TARGET ${{ inputs.path }} --no-browser
-          fi
+          quarto publish dh-pages --no-browser
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
