@@ -2,6 +2,7 @@
 
 # project root exceptions
 !.gitignore
+!justfile
 !_quarto.yml
 !about.qmd
 !index.qmd
@@ -24,3 +25,5 @@
 !/.github/workflows/*.yml
 !/.github/workflows/*.yaml
 
+
+/.quarto/
