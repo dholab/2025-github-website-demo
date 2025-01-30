@@ -2,14 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dholab.github.io/2025-github-website-demo/index.html</loc>
-    <lastmod>2025-01-30T17:36:24.111Z</lastmod>
+    <lastmod>2025-01-30T17:38:31.476Z</lastmod>
   </url>
   <url>
     <loc>https://dholab.github.io/2025-github-website-demo/about.html</loc>
-    <lastmod>2025-01-30T17:36:24.111Z</lastmod>
+    <lastmod>2025-01-30T17:38:31.476Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dholab.github.io/2025-github-website-demo/dashboard.html</loc>
+    <lastmod>2025-01-30T17:38:31.476Z</lastmod>
   </url>
   <url>
     <loc>https://dholab.github.io/2025-github-website-demo/setup.html</loc>
-    <lastmod>2025-01-30T17:36:24.111Z</lastmod>
+    <lastmod>2025-01-30T17:38:31.476Z</lastmod>
   </url>
 </urlset>
