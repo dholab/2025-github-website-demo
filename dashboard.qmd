@@ -1,0 +1,341 @@
+--- 
+title: "Dashboard Demo"
+format: dashboard
+--- 
+
+# Introduction {scrolling="true"}
+
+:::{.card title="Python Environment Refresher" scrolling="true" .flow}
+
+On this page, we're going to start actually doing things with Python. Before we get started, let's do a quick `uv` refresher.
+
+To work with Python, use our Python library, and call on dependencies, we need our Python virtual environment, which `uv` will handle for us. To make a fresh environment, run `uv venv`. To "activate" it/use anything installed in it, run `source .venv/bin/activate`. To sync it up with any dependencies in `pyproject.toml`, run `uv sync`. Note also that whenever you use `uv add` to add an additional dependency and `uv remove` to do the reverse, `uv` will automatically create the environment if it needs to and sync it up.
+
+:::
+
+:::{.card title="Python in Markdown" scrolling="true" .flow}
+
+Quarto was developed by the RStudio company, now called Posit, to be a more broadly useful successor to RMarkdown notebooks. They still look mostly the same as RMarkdown, which is to say, the notebooks are valid markdown syntax, with code blocks that can be run, e.g.,:
+
+```{python}
+#| echo: fenced
+print("Hi Mom!")
+```
+
+Editors like RStudio, VSCode, and Positron will allow you to run each block on its own, almost exactly like a Jupyter notebooks, but by default, all code will be run each time the document is rendered, which guarantees that the final output is correct.
+
+::: {.callout-tip title="Different notebook systems" collapse=true}
+I mentioned Quarto is a successor to RMarkdown and also mentioned that it works like Jupyter. Why not stick with RMarkdown or Jupyter?
+
+RMarkdown's primary downside on its own, of course, is that it can only run R code (although I think it may also be able to run bash), though it's great that its source code is just Markdown. Jupyter doesn't share the same weakness, as it can run Julia, Python, and R (Jupyter is a portmanteau of those three languages' names). That said, Jupyter's source format is a very complicated JSON. It also embeds outputs in that JSON, which makes it very easy to break the reproducibility chain by updating a code block but forgetting to update its outputs. RMarkdown again wins here because everything is recomputed at render-time, and outputs are not included in the source format.
+
+So, to summarize, RMarkdown is simpler in that it's just markdown, more reproducible, but also less useful across the big three data science languages. Jupyter is a bit more flexible and well-supported across editors and languages, but also less reproducible and with a more complicated, git-unfriendly source format.
+
+Quarto attempts to take the good parts of both systems, blend them together, and then add a huge number of additional features. It's just Markdown, like RMarkdown, and it also adopts RMarkdown's render-time reproducibility. But like Jupyter, it supports more languages, and in fact it supports way more languages than Jupyter: it can run Python, R, Julia, and JavaScript data visualization framework called Observable, and it can syntax-highlight most languages. That's why in our setup tutorial, YAML and TOML code blocks are highlighted rather than plain text.
+
+On top of that, Quarto extends RMarkdown's rendering capabilities to virtually every format you might want to render to, including `.epub` books, HTML, PowerPoint presentations, Word documents, `reveal.js` presentations, wikis, etc. [A full list of supported formats is here](https://quarto.org/docs/output-formats/all-formats.html).
+:::
+
+In this document, we're going to use Python in Markdown with some of the dependencies we install with `uv` to display some interactive dashboards. We'll also show how to use a GitHub action to check for new data from labkey at a set interval.
+
+:::
+
+:::{.card title="Our Data Visualization Stack" .flow}
+
+For this demo, we're going to reach for the Altair package for generating interactive data visualizations and `itables` for browsing tables. Rather than using Shiny or some other dashboard layout system, we're just going to use [Quarto's built-in layout system](https://quarto.org/docs/dashboards/layout.html#scrolling), which, surprise surprise, is just Markdown. It has functionality for tabs, dividing each page into rows and columns, sidebars, etc. In short, everything we need.
+
+While I choose Altair here because it's much faster than the competition and has a nice syntax, there's smorgasbord of data viz options for Python users, the most popular of which is Plotly for interactive visualizations and Matplotlib for static visualizations.
+
+To install these, run the following:
+
+```{.bash}
+uv add --extra all altair
+uv add itables pandas geopandas palmerpenguins
+```
+
+As you'll see, I install pandas, geopandas, and palmerpenguins for demonstration purposes.
+
+:::
+
+# Tabbed Plots
+
+:::{.card title="Overview" height=25%}
+
+Note that the following tutorials from the Quarto docs are extremely helpful:
+
+- [https://quarto.org/docs/dashboards/layout.html](https://quarto.org/docs/dashboards/layout.html)
+- [https://quarto.org/docs/dashboards/data-display.html](https://quarto.org/docs/dashboards/data-display.html)
+
+:::
+
+## Row {.tabset}
+
+```{python}
+#| title: Interactive Slider
+import altair as alt
+import pandas as pd
+import numpy as np
+
+rand = np.random.RandomState(42)
+
+df = pd.DataFrame({
+    'xval': range(100),
+    'yval': rand.randn(100).cumsum()
+})
+
+slider = alt.binding_range(min=0, max=100, step=1)
+cutoff = alt.param(bind=slider, value=50)
+predicate = alt.datum.xval < cutoff
+
+alt.Chart(df).mark_point().encode(
+    x='xval',
+    y='yval',
+    color=alt.when(predicate).then(alt.value("red")).otherwise(alt.value("blue")),
+).add_params(
+    cutoff
+)
+
+```
+
+```{python}
+#| title: Interval Selection on Map
+import altair as alt
+from vega_datasets import data
+import geopandas as gpd
+
+# load data
+gdf_quakies = gpd.read_file(data.earthquakes.url, driver="GeoJSON")
+gdf_world = gpd.read_file(data.world_110m.url, driver="TopoJSON")
+
+# defintion for interactive brush
+brush = alt.selection_interval(
+    encodings=["longitude"],
+    empty=False,
+    value={"longitude": [-50, -110]}
+)
+
+# world disk
+sphere = alt.Chart(alt.sphere()).mark_geoshape(
+    fill="transparent", stroke="lightgray", strokeWidth=1
+)
+
+# countries as shapes
+world = alt.Chart(gdf_world).mark_geoshape(
+    fill="lightgray", stroke="white", strokeWidth=0.1
+)
+
+# earthquakes as dots on map
+quakes = alt.Chart(gdf_quakies).transform_calculate(
+    lon="datum.geometry.coordinates[0]",
+    lat="datum.geometry.coordinates[1]",
+).mark_circle(opacity=0.35, tooltip=True).encode(
+    longitude="lon:Q",
+    latitude="lat:Q",
+    color=alt.when(brush).then(alt.value("goldenrod")).otherwise(alt.value("steelblue")),
+    size=alt.Size("mag:Q").scale(type="pow", range=[1, 1000], domain=[0, 7], exponent=4),
+).add_params(brush)
+
+# combine layers for the map
+left_map = alt.layer(sphere, world, quakes).project(type="mercator")
+
+# histogram of binned earthquakes
+bars = alt.Chart(gdf_quakies).mark_bar().encode(
+    x=alt.X("mag:Q").bin(extent=[0,7]),
+    y="count(mag):Q",
+    color=alt.value("steelblue")
+)
+
+# filtered earthquakes
+bars_overlay = bars.encode(color=alt.value("goldenrod")).transform_filter(brush)
+
+# combine layers for histogram
+right_bars = alt.layer(bars, bars_overlay)
+
+# vertical concatenate map and bars
+left_map | right_bars
+```
+
+```{python}
+#| title: Isotope Visualization with Emojis lol
+import altair as alt
+import pandas as pd
+
+source = pd.DataFrame([
+      {'country': 'Great Britain', 'animal': 'cattle'},
+      {'country': 'Great Britain', 'animal': 'cattle'},
+      {'country': 'Great Britain', 'animal': 'cattle'},
+      {'country': 'Great Britain', 'animal': 'pigs'},
+      {'country': 'Great Britain', 'animal': 'pigs'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'Great Britain', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'cattle'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'pigs'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'},
+      {'country': 'United States', 'animal': 'sheep'}
+    ])
+
+
+alt.Chart(source).mark_text(size=45, baseline='middle').encode(
+    alt.X('x:O').axis(None),
+    alt.Y('animal:O').axis(None),
+    alt.Row('country:N').title(''),
+    alt.Text('emoji:N')
+).transform_calculate(
+    emoji="{'cattle': '🐄', 'pigs': '🐖', 'sheep': '🐏'}[datum.animal]"
+).transform_window(
+    x='rank()',
+    groupby=['country', 'animal']
+).properties(
+    width=550,
+    height=140
+)
+```
+
+```{python}
+#| title: Selection zorder
+import altair as alt
+from vega_datasets import data
+
+
+cars = data.cars.url
+
+hover = alt.selection_point(on='pointerover', nearest=True, empty=False)
+when_hover = alt.when(hover)
+
+chart = alt.Chart(cars, title='Selection obscured by other points').mark_circle(opacity=1).encode(
+    x='Horsepower:Q',
+    y='Miles_per_Gallon:Q',
+    color=when_hover.then(alt.value("coral")).otherwise(alt.value("lightgray")),
+    size=when_hover.then(alt.value(300)).otherwise(alt.value(30))
+).add_params(
+    hover
+)
+
+chart | chart.encode(
+    order=when_hover.then(alt.value(1)).otherwise(alt.value(0))
+).properties(
+    title='Selection brought to front'
+)
+```
+
+```{python}
+#| title: Multiple interactions
+import altair as alt
+from vega_datasets import data
+
+movies = alt.UrlData(
+    data.movies.url,
+    format=alt.DataFormat(parse={"Release_Date":"date"})
+)
+ratings = ['G', 'NC-17', 'PG', 'PG-13', 'R']
+genres = [
+    'Action', 'Adventure', 'Black Comedy', 'Comedy',
+    'Concert/Performance', 'Documentary', 'Drama', 'Horror', 'Musical',
+    'Romantic Comedy', 'Thriller/Suspense', 'Western'
+]
+
+base = alt.Chart(movies, width=200, height=200).mark_point(filled=True).transform_calculate(
+    Rounded_IMDB_Rating = "floor(datum.IMDB_Rating)",
+    Big_Budget_Film =  "datum.Production_Budget > 100000000 ? 'Yes' : 'No'",
+    Release_Year = "year(datum.Release_Date)",
+).transform_filter(
+    alt.datum.IMDB_Rating > 0
+).transform_filter(
+    alt.FieldOneOfPredicate(field='MPAA_Rating', oneOf=ratings)
+).encode(
+    x=alt.X('Worldwide_Gross:Q').scale(domain=(100000,10**9), clamp=True),
+    y='IMDB_Rating:Q',
+    tooltip="Title:N"
+)
+
+# A slider filter
+year_slider = alt.binding_range(min=1969, max=2018, step=1, name="Release Year")
+slider_selection = alt.selection_point(bind=year_slider, fields=['Release_Year'])
+
+filter_year = base.add_params(
+    slider_selection
+).transform_filter(
+    slider_selection
+).properties(title="Slider Filtering")
+
+# A dropdown filter
+genre_dropdown = alt.binding_select(options=genres, name="Genre")
+genre_select = alt.selection_point(fields=['Major_Genre'], bind=genre_dropdown)
+
+filter_genres = base.add_params(
+    genre_select
+).transform_filter(
+    genre_select
+).properties(title="Dropdown Filtering")
+
+# Color changing marks
+rating_radio = alt.binding_radio(options=ratings, name="Rating")
+rating_select = alt.selection_point(fields=['MPAA_Rating'], bind=rating_radio)
+
+rating_color = (
+    alt.when(rating_select)
+    .then(alt.Color("MPAA_Rating:N").legend(None))
+    .otherwise(alt.value("lightgray"))
+)
+
+highlight_ratings = base.add_params(
+    rating_select
+).encode(
+    color=rating_color
+).properties(title="Radio Button Highlighting")
+
+# Boolean selection for format changes
+input_checkbox = alt.binding_checkbox(name="Big Budget Films ")
+checkbox_selection = alt.param(bind=input_checkbox)
+
+size_checkbox = (
+    alt.when(checkbox_selection)
+    .then(alt.Size('Big_Budget_Film:N').scale(range=[25, 150]))
+    .otherwise(alt.value(25))
+)
+
+budget_sizing = base.add_params(
+    checkbox_selection
+).encode(
+    size=size_checkbox
+).properties(title="Checkbox Formatting")
+
+(filter_year | budget_sizing) & (highlight_ratings | filter_genres)
+```
+
+# Table Exploration
+
+
+```{python}
+from itables import show
+from palmerpenguins import load_penguins
+penguins = load_penguins()
+show(penguins)
+```
+
