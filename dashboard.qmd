@@ -57,9 +57,9 @@ As you'll see, I install pandas, geopandas, and palmerpenguins for demonstration
 
 :::
 
-# Tabbed Plots
+# Tabbed Plots {}
 
-:::{.card title="Overview" height=25%}
+:::{.card title="Overview" .flow}
 
 Note that the following tutorials from the Quarto docs are extremely helpful:
 
