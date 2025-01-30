@@ -5,7 +5,7 @@ format: dashboard
 
 # Introduction {scrolling="true"}
 
-:::{.card title="Python Environment Refresher" scrolling="true" .flow}
+:::{.card title="Python Environment Refresher" .flow}
 
 On this page, we're going to start actually doing things with Python. Before we get started, let's do a quick `uv` refresher.
 
@@ -13,7 +13,7 @@ To work with Python, use our Python library, and call on dependencies, we need o
 
 :::
 
-:::{.card title="Python in Markdown" scrolling="true" .flow}
+:::{.card title="Python in Markdown" .flow}
 
 Quarto was developed by the RStudio company, now called Posit, to be a more broadly useful successor to RMarkdown notebooks. They still look mostly the same as RMarkdown, which is to say, the notebooks are valid markdown syntax, with code blocks that can be run, e.g.,:
 
