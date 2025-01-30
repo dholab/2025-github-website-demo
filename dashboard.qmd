@@ -333,9 +333,9 @@ budget_sizing = base.add_params(
 
 
 ```{python}
-from itables import show
+import itables as it
 from palmerpenguins import load_penguins
 penguins = load_penguins()
-show(penguins)
+it.show(penguins, column_filters="header")
 ```
 
