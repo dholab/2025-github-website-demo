@@ -125,7 +125,7 @@ The second best thing is that it can, like Quarto itself, be configured with a s
 
 To get started, make sure you have [`uv` installed](https://docs.astral.sh/uv/getting-started/installation/), and then run `uv init --name quarto_dashboards --lib .`. This will create a project called `quarto-dashboards` in the current working directory that is a library rather than an executable. If and when our code gets too big to be viewed in our website, we can put it in our python library and import it in our Quarto python. Cool!
 
-This will also generate a Python virtual environment and the aforementioned `pyproject.toml` for us. Now, let’s put some stuff in it! Our website will need a few things: the Jupyter engine, a Python kernel, and the labkey Python API, all of which are available on the [Python Package Index (PyPI)](https://pypi.org/) and are thus installable with `uv`. Just run `uv add jupyter ipykernel labkey` and then observe the following change in `pyproject.toml`:
+This will also generate a Python virtual environment and the aforementioned `pyproject.toml` for us. Now, let’s put some stuff in it! Our website will need a few things: the Jupyter engine, a Python kernel, and the labkey Python API, all of which are available on the [Python Package Index (PyPI)](https://pypi.org/) and are thus installable with `uv`. Just run `uv add jupyter ipykernel labkey` and then observe the following in `pyproject.toml`:
 
 <div class="code-with-filename">
 
@@ -140,6 +140,8 @@ dependencies = [
 ```
 
 </div>
+
+(Note that more dependencies may be added elsewhere in the project, so it’s possible the `pyproject.toml` file won’t have quite the same dependency listing at the time you read this.)
 
 As you can see, we now have our dependencies locked with precise versions, which means our environment will be reproducible.
 

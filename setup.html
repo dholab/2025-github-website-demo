@@ -4776,6 +4776,11 @@ vertical-align: -.125em;
     <a class="nav-link active" href="./setup.html" aria-current="page"> 
 <span class="menu-text">Setting up this project</span></a>
   </li>  
+  <li class="nav-item">
+    <span class="nav-link">
+<span class="menu-text">dashboard.qmd</span>
+    </span>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -4936,7 +4941,7 @@ On <code>uv</code>
 </div>
 </div>
 <p>To get started, make sure you have <a href="https://docs.astral.sh/uv/getting-started/installation/"><code>uv</code> installed</a>, and then run <code>uv init --name quarto_dashboards --lib .</code>. This will create a project called <code>quarto-dashboards</code> in the current working directory that is a library rather than an executable. If and when our code gets too big to be viewed in our website, we can put it in our python library and import it in our Quarto python. Cool!</p>
-<p>This will also generate a Python virtual environment and the aforementioned <code>pyproject.toml</code> for us. Now, let’s put some stuff in it! Our website will need a few things: the Jupyter engine, a Python kernel, and the labkey Python API, all of which are available on the <a href="https://pypi.org/">Python Package Index (PyPI)</a> and are thus installable with <code>uv</code>. Just run <code>uv add jupyter ipykernel labkey</code> and then observe the following change in <code>pyproject.toml</code>:</p>
+<p>This will also generate a Python virtual environment and the aforementioned <code>pyproject.toml</code> for us. Now, let’s put some stuff in it! Our website will need a few things: the Jupyter engine, a Python kernel, and the labkey Python API, all of which are available on the <a href="https://pypi.org/">Python Package Index (PyPI)</a> and are thus installable with <code>uv</code>. Just run <code>uv add jupyter ipykernel labkey</code> and then observe the following in <code>pyproject.toml</code>:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>pyproject.toml</strong></pre>
@@ -4947,6 +4952,7 @@ On <code>uv</code>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;labkey&gt;=3.3.0&quot;</span><span class="op">,</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>(Note that more dependencies may be added elsewhere in the project, so it’s possible the <code>pyproject.toml</code> file won’t have quite the same dependency listing at the time you read this.)</p>
 <p>As you can see, we now have our dependencies locked with precise versions, which means our environment will be reproducible.</p>
 <p>To get into our virtual environment, run <code>source .venv/bin/activate</code>. You will now have access to your dependencies.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Pro-tip on shell aliases">
