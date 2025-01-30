@@ -8,11 +8,25 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "altair[all]>=5.5.0",
+    "geopandas>=1.0.1",
     "ipykernel>=6.29.5",
+    "itables>=2.2.4",
     "jupyter>=1.1.1",
     "labkey>=3.3.0",
+    "palmerpenguins>=0.1.4",
+    "pandas>=2.2.3",
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.26.0",
+    "pre-commit>=4.1.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.3",
+    "tox>=4.24.1",
+]
